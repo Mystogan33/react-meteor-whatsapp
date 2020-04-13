@@ -19,6 +19,7 @@
     "moment": "^2.24.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-flip-move": "^3.0.4",
     "react-fontawesome": "^1.7.1",
     "react-moment": "^0.9.7",
     "react-router-dom": "^5.1.2",

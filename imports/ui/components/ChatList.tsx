@@ -12,17 +12,25 @@ interface ChatListProps {
 
 const ChatList = ({ chats, onChatClick, selectedChat }: ChatListProps) => {
 
-  const renderchats = () => chats.map(chat => {
-    const active: boolean = selectedChat._id === chat._id;
-    return (
-      <ChatItem 
-        key={chat._id}
-        {...chat}
-        onChatClick={onChatClick}
-        active={active}
-      />
-    )
-  });
+  const renderchats = () => {
+    return chats
+      .sort((a, b) => {
+        return (b.lastMessage?.createdAt && a.lastMessage?.createdAt)
+        ? b.lastMessage.createdAt.getTime() - a.lastMessage.createdAt.getTime()
+        : 0;
+      })
+      .map(chat => {
+        const active: boolean = selectedChat._id === chat._id;
+        return (
+          <ChatItem 
+            key={chat._id}
+            {...chat}
+            onChatClick={onChatClick}
+            active={active}
+          />
+        );
+    });
+  };
 
   return (
     <StyledChatList>

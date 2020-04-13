@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import StyledMessageBox from '../elements/StyledMessageBox';
-import { Message } from '/imports/api/interfaces/chat.interface';
+import { Message, Chat } from '/imports/api/interfaces/chat.interface';
 import { Meteor } from 'meteor/meteor';
 import _ from 'lodash';
 import moment from 'moment';
 import Day from './Day';
 import MessageText from './MessageText';
+import FlipMove from 'react-flip-move';
 
 interface NormalizedMessage {
   date: string;
@@ -15,11 +16,13 @@ interface NormalizedMessage {
 
 interface MessageBoxProps {
   messages: Message[];
+  selectedChat: Chat;
 }
 
-const MessageBox = ({ messages }: MessageBoxProps) => {
+const MessageBox = ({ messages, selectedChat }: MessageBoxProps) => {
   let isEven = false;
   const dFormat = "D MMMM Y";
+  let chatEndDiv: HTMLDivElement;
 
   messages.forEach(message => {
     if(!message.senderId) {
@@ -33,19 +36,26 @@ const MessageBox = ({ messages }: MessageBoxProps) => {
   });
 
   const groupedMessages = _.groupBy(messages, message => moment(message.createdAt).format(dFormat));
-  const newMessages: NormalizedMessage[] = Object.keys(groupedMessages).map(key => ({ date: key, groupedMessages: groupedMessages[key], today: moment().format(dFormat) === key }));
-
+  const newMessages: NormalizedMessage[] = (
+    Object
+    .keys(groupedMessages)
+    .map(key => ({ 
+      date: key,
+      groupedMessages: groupedMessages[key],
+      today: moment().format(dFormat) === key 
+    }))
+  );
+    
   const renderMessages = (message: NormalizedMessage) => {
-    return message.groupedMessages.map(({_id, content, ownership}) => {
+    return message.groupedMessages.map(({_id, content, ownership, createdAt}) => {
       const msgClass = `message message--${ownership}`;
       return (
-        <MessageText key={_id} msgClass={msgClass} content={content} ownership={ownership} />
+        <MessageText key={_id} msgClass={msgClass} content={content} ownership={ownership} createdAt={createdAt} />
       );
     });
-  }
+  };
 
   const renderDays = () => {
-    console.log(newMessages);
     return newMessages.map((message, index) => {
       const { today, date } = message;
       const dateText = today ? "Aujourd'hui" : date
@@ -58,9 +68,16 @@ const MessageBox = ({ messages }: MessageBoxProps) => {
     });
   };
 
+  const scrollToBottom = () => chatEndDiv.scrollIntoView({ behavior: "smooth"});
+
+  useEffect(() => scrollToBottom(), [selectedChat, messages]);
+
   return (
     <StyledMessageBox>
-      {renderDays()}
+      <FlipMove>
+        {renderDays()}
+      </FlipMove>
+      <div ref={(el: HTMLDivElement) => chatEndDiv = el} />
     </StyledMessageBox>
   )
 };

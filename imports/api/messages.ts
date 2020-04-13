@@ -9,6 +9,11 @@ if(Meteor.isServer) {
   Meteor.publish('messages.all', function() {
     return MessagesCollection.find();
   });
+  Meteor.methods({
+    "message.insert": function(message: Message) {
+      return MessagesCollection.insert(message);
+    }
+  });
 };
 
 export const DummyMessages: Message[] = [
