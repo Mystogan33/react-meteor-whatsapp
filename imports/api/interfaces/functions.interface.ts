@@ -15,3 +15,7 @@ export type IHandleLogin = (userCreds: UserCredentials) => void;
 export type IHandleChatClick = (_id: Chat["_id"]) => void;
 export type IHandleFooterChange = (e: ChangeEvent<HTMLInputElement>) => void;
 export type IHandleFooterSend = (content: Message["content"]) => void;
+
+export type IHandleFabInputChange = (e: ChangeEvent<HTMLInputElement>) => void;
+
+export type IUploadFile = (file: any) => void;

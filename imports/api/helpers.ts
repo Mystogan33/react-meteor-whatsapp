@@ -1,8 +1,9 @@
-import { ICreateDummyUsers, ICreateDummyChats, IFindChats, IFindOtherId, IFindOtherUser, ICreateDummyMessages, IFindLastMessage } from "./interfaces/functions.interface";
+import { ICreateDummyUsers, ICreateDummyChats, IFindChats, IFindOtherId, IFindOtherUser, ICreateDummyMessages, IFindLastMessage, IUploadFile } from "./interfaces/functions.interface";
 import { Accounts } from 'meteor/accounts-base';
 import { ChatsCollection } from "./chats";
 import { Meteor } from "meteor/meteor";
 import { MessagesCollection } from "./messages";
+import { ImagesCollection } from "./images";
 
 export const createDummyUsers: ICreateDummyUsers = (users) => {
   users.forEach(user => Accounts.createUser(user));
@@ -49,7 +50,31 @@ export const findOtherUser: IFindOtherUser = (_id) => {
 export const findLastMessage: IFindLastMessage = (chatId) => {
   const foundMessage = MessagesCollection.findOne({ chatId }, { sort: { createdAt: -1 }});
   if(!foundMessage) {
-    console.log("Couldn't find last message in chat");
     return null;
   } else return foundMessage;
+};
+
+export const uploadFile: IUploadFile = (file) => {
+  const fileUpload = ImagesCollection.insert({
+    file,
+    streams: 'dynamic',
+    chunkSize: 'dynamic',
+    allowWebWorkers: true
+  }, false);
+
+  fileUpload.on('start', () => console.log("Start"));
+  fileUpload.on('end', (err: any, fileObj: any) => {
+    if(err) console.log("[End Error]", err);
+    else console.log("[End File]", fileObj);
+  });
+
+  fileUpload.on('err', (err: any, _: any) => {
+    console.log(err);
+  });
+
+  fileUpload.on('progress', (progression: any, _: any) => {
+    console.log("[Progress]", progression);
+  });
+
+  fileUpload.start();
 };

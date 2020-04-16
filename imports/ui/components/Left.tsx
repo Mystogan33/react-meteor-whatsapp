@@ -9,11 +9,21 @@ import Searchbar from './Searchbar';
 import { Chat } from '/imports/api/interfaces/chat.interface';
 import ChatList from './ChatList';
 import { IHandleChatClick } from '/imports/api/interfaces/functions.interface';
+import { IIcon } from '/imports/api/interfaces/global.interface';
 
-const icons = [
-  "circle-notch",
-  "comment-alt",
-  "ellipsis-v"
+const icons: IIcon[] = [
+  {
+    name: "circle-notch",
+    func: () => {}
+  },
+  {
+    name: "comment-alt",
+    func: () => {}
+  },
+  {
+    name: "ellipsis-v",
+    func: () => {}
+  }
 ];
 
 interface LeftProps {

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import StyledMain from '../elements/StyledMain';
 import Left from './Left';
 import Right from './Right';
-import { Tracker } from 'meteor/tracker';
 import { Meteor } from 'meteor/meteor';
 import { findChats } from '/imports/api/helpers';
 import { IHandleChatClick } from '/imports/api/interfaces/functions.interface';

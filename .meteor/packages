@@ -22,3 +22,4 @@ react-meteor-data       # React higher-order component for reactively tracking M
 server-render
 fourseven:scss
 accounts-password
+ostrio:files

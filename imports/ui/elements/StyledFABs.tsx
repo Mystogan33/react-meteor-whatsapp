@@ -1,13 +1,13 @@
 import styled, { css } from 'styled-components';
 
-const StyledFABs = styled.div`
+const StyledFABs = styled.div<any>`
     display: none;
     position: fixed;
     top: 6.5rem;
     right: 5.5rem;
     z-index: 100;
 
-    ${props => props.fabVisible && css`
+    ${({fabVisible}) => fabVisible && css`
         display: flex;
         flex-direction: column;
         align-items: center;

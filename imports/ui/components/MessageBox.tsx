@@ -7,6 +7,8 @@ import moment from 'moment';
 import Day from './Day';
 import MessageText from './MessageText';
 import FlipMove from 'react-flip-move';
+import FABs from './FABs';
+import { IHandleFabInputChange } from '/imports/api/interfaces/functions.interface';
 
 interface NormalizedMessage {
   date: string;
@@ -17,9 +19,12 @@ interface NormalizedMessage {
 interface MessageBoxProps {
   messages: Message[];
   selectedChat: Chat;
+  fabVisible: boolean;
+  handleFabClick: () => void;
+  handleFabInputChange: IHandleFabInputChange;
 }
 
-const MessageBox = ({ messages, selectedChat }: MessageBoxProps) => {
+const MessageBox = ({ messages, selectedChat, fabVisible, handleFabClick, handleFabInputChange }: MessageBoxProps) => {
   let isEven = false;
   const dFormat = "D MMMM Y";
   let chatEndDiv: HTMLDivElement;
@@ -35,7 +40,7 @@ const MessageBox = ({ messages, selectedChat }: MessageBoxProps) => {
     };
   });
 
-  const groupedMessages = _.groupBy(messages, message => moment(message.createdAt).format(dFormat));
+  const groupedMessages = _.groupBy(messages, (message: Message) => moment(message.createdAt).format(dFormat));
   const newMessages: NormalizedMessage[] = (
     Object
     .keys(groupedMessages)
@@ -74,6 +79,7 @@ const MessageBox = ({ messages, selectedChat }: MessageBoxProps) => {
 
   return (
     <StyledMessageBox>
+      <FABs fabVisible={fabVisible} handleFabClick={handleFabClick} handleFabInputChange={handleFabInputChange} />
       <FlipMove>
         {renderDays()}
       </FlipMove>

@@ -1,9 +1,10 @@
 import React from 'react';
 import StyledHeader from '../elements/StyledHeader';
 import FontAwesome from 'react-fontawesome';
+import { IIcon } from '/imports/api/interfaces/global.interface';
 
 interface HeaderProps {
-  icons: string[];
+  icons: IIcon[];
   iconClass: string;
   iconsWidthSmall?: any;
   children: any;
@@ -12,7 +13,16 @@ interface HeaderProps {
 const Header = ({ icons, iconClass, iconsWidthSmall, children }: HeaderProps) => {
 
   const renderIcons = () => {
-    return icons.map((icon, i) => <FontAwesome key={i} className={iconClass} name={icon} />);
+    return icons.map((icon, i) => {
+      return (
+        <FontAwesome 
+          key={i} 
+          className={iconClass} 
+          name={icon.name}
+          onClick={icon.func} 
+        />
+      )
+    });
   };
 
   return (
