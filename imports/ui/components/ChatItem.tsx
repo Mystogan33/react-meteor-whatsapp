@@ -5,6 +5,7 @@ import { Chat } from '/imports/api/interfaces/chat.interface';
 import Moment from 'react-moment';
 import moment from 'moment';
 import { IHandleChatClick } from '/imports/api/interfaces/functions.interface';
+import FontAwesome from 'react-fontawesome';
 
 interface ChatItemProps extends Chat {
   onChatClick: IHandleChatClick
@@ -28,7 +29,15 @@ const ChatItem = ({  _id, title, picture, lastMessage, onChatClick, active }: Ch
           </div>
         </div>
         <div className="content--line1">
-          <span className="content--message">{lastMessage?.content}</span>
+          { lastMessage?.type === "TEXT"
+            ? <span className="content--message">{lastMessage?.content}</span>
+            : (
+              <span className="content--message">
+                <FontAwesome name="camera" style={{ marginRight: "0.4rem"}} />
+                Photo
+              </span>
+            )
+          }
           <div className="chat--badge">4</div>
         </div>
       </div>

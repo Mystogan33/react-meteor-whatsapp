@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-const StyledImage = styled.div`
+const StyledMessageImage = styled.div<any>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,7 +18,6 @@ const StyledImage = styled.div`
         .__date {
             position: relative !important;
             right: 0.4rem !important;
-
         }
     `}
 
@@ -48,4 +47,4 @@ const StyledImage = styled.div`
     }
 `
 
-export default StyledImage;
+export default StyledMessageImage;

@@ -1,11 +1,13 @@
 import React from 'react';
 import FontAwesome from 'react-fontawesome';
 import StyledModal from '../elements/StyledModal';
+import { IHandleFooterSend } from '/imports/api/interfaces/functions.interface';
+import { MessageType } from '/imports/api/interfaces/chat.interface';
 
 interface ModalProps {
   selectedImage?: any;
   onClose: () => void;
-  onUpload: () => void;
+  onUpload: IHandleFooterSend;
 }
 
 const Modal = ({ selectedImage, onClose, onUpload }: ModalProps) => {
@@ -17,7 +19,7 @@ const Modal = ({ selectedImage, onClose, onUpload }: ModalProps) => {
       </div>
       <div className="modal--body">
         <img style={{width: "349px", height: "349px" }} alt="_apercu" src={selectedImage} />
-        <div className="modal--body__fab" onClick={onUpload}>
+        <div className="modal--body__fab" onClick={() => onUpload("", MessageType.IMAGE)}>
           <FontAwesome name="paper-plane" size="3x" />
         </div>
       </div>

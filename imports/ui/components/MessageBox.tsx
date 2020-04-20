@@ -9,6 +9,7 @@ import MessageText from './MessageText';
 import FlipMove from 'react-flip-move';
 import FABs from './FABs';
 import { IHandleFabInputChange } from '/imports/api/interfaces/functions.interface';
+import MessageImage from './MessageImage';
 
 interface NormalizedMessage {
   date: string;
@@ -52,8 +53,16 @@ const MessageBox = ({ messages, selectedChat, fabVisible, handleFabClick, handle
   );
     
   const renderMessages = (message: NormalizedMessage) => {
-    return message.groupedMessages.map(({_id, content, ownership, createdAt}) => {
+    return message.groupedMessages.map(({_id, content, ownership, createdAt, type}) => {
       const msgClass = `message message--${ownership}`;
+
+      if(type === "IMAGE") {
+        const mine = ownership === "mine";
+        return (
+          <MessageImage key={_id} content={content} createdAt={createdAt} mine={mine} />
+        )
+      }
+
       return (
         <MessageText key={_id} msgClass={msgClass} content={content} ownership={ownership} createdAt={createdAt} />
       );

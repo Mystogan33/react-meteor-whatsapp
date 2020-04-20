@@ -3,11 +3,12 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import moment from 'moment';
 
-import { Chat, Message, MessageType } from '/imports/api/interfaces/chat.interface';
+import { Chat, Message } from '/imports/api/interfaces/chat.interface';
 import { IIcon } from '/imports/api/interfaces/global.interface';
 import { IHandleFooterSend, IHandleFabInputChange } from '/imports/api/interfaces/functions.interface';
 
 import { MessagesCollection } from '/imports/api/messages';
+import { uploadFile } from '/imports/api/helpers';
 
 import Header from './Header';
 import Avatar from './Avatar';
@@ -16,11 +17,12 @@ import Modal from './Modal';
 import MessageBox from './MessageBox';
 
 import StyledMessageView from '../elements/StyledMessageView';
-import { uploadFile } from '/imports/api/helpers';
+import { Session } from 'meteor/session';
+import { Tracker } from 'meteor/tracker';
 
 interface MessageViewProps {
   selectedChat: Chat;
-  chatMessages: Message[]
+  chatMessages: Message[];
 };
 
 let fileInput: any = null;
@@ -45,11 +47,9 @@ const MessageView = ({ selectedChat, chatMessages }: MessageViewProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<any>("");
 
-  const handlePaperClick = () => {
-    setFabVisible(!fabVisible);
-  };
+  const handlePaperClick = () => setFabVisible(!fabVisible);
 
-  const handleSend: IHandleFooterSend = (content) => {
+  const handleSend: IHandleFooterSend = (content, type) => {
     const userId = Meteor.userId();
 
     if(userId) {
@@ -58,12 +58,26 @@ const MessageView = ({ selectedChat, chatMessages }: MessageViewProps) => {
         content,
         createdAt: moment().toDate(),
         senderId: userId,
-        type: MessageType.TEXT,
+        type,
         read: false
       };
 
-      Meteor.call('message.insert', message, (err: Error, _: any) => {
-        if(err) console.log(err);
+      if(modalVisible) handleModalClose();
+
+      Meteor.call('message.insert', message, (err: Error, id: any) => {
+        if(err) console.log("[Error during Message Insert]", err);
+        else {
+          uploadFile(fileInput);
+          Tracker.autorun(() => {
+            const imageUrl = Session.get("wwc__imageUrl");
+            if(imageUrl && message.type === "IMAGE") {
+              Meteor.call('message.update', id, imageUrl, (err: any, res: any) => {
+                if(err) console.log(err);
+                else console.log(res);
+              });
+            }
+          });
+        };
       });
     }
   };
@@ -75,7 +89,6 @@ const MessageView = ({ selectedChat, chatMessages }: MessageViewProps) => {
 
   const handleFabInputChange: IHandleFabInputChange = ({ target }) => {
     if(target && target.files) fileInput = target.files[0];
-    console.log("[HandleFabInputChange]", fileInput);
 
     if(fileInput) {
       const fileReader = new FileReader();
@@ -102,7 +115,7 @@ const MessageView = ({ selectedChat, chatMessages }: MessageViewProps) => {
         </div>
       </Header>
       { modalVisible
-        ? <Modal onClose={handleModalClose} selectedImage={selectedImage} onUpload={() => uploadFile(fileInput)} />
+        ? <Modal onClose={handleModalClose} selectedImage={selectedImage} onUpload={handleSend} />
         : (
           <>
             <MessageBox 

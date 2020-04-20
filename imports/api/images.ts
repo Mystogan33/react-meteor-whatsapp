@@ -22,4 +22,12 @@ if(Meteor.isServer) {
   });
   
   ImagesCollection.allowClient();
+
+  Meteor.methods({
+    "images.url":  function(_id: string) {
+      const image =  ImagesCollection.findOne(_id);
+      const url = image.link();
+      if(url) return url;
+    }
+  });
 }

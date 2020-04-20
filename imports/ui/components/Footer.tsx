@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import FontAwesome from 'react-fontawesome';
 import StyledFooter from '../elements/StyledFooter';
 import { IHandleFooterChange, IHandleFooterSend } from '/imports/api/interfaces/functions.interface';
+import { MessageType } from '/imports/api/interfaces/chat.interface';
 
 interface FooterProps {
   onSend: IHandleFooterSend;
@@ -20,8 +21,9 @@ const Footer = ({ onSend }: FooterProps) => {
 
   const handleClick = () => {
     if(iconName === "microphone") return;
-    onSend(inputValue);
+    onSend(inputValue, MessageType.TEXT);
     setInputValue('');
+    setIconName("microphone");
   };
 
   return (
