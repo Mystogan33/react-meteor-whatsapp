@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-const StyledActuItem = styled.div`
+const StyledActuItem = styled.div<any>`
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -29,7 +29,6 @@ const StyledActuItem = styled.div`
         margin-right: 3rem;
         font-size: 2rem;
     }
-
-`
+`;
 
 export default StyledActuItem;

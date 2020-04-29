@@ -32,7 +32,6 @@ const StyledActu = styled.div`
         font-size: 1.6rem;
         margin-bottom: 1.9rem;
     }
-
 `
 
 export default StyledActu;

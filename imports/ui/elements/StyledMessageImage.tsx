@@ -5,21 +5,26 @@ const StyledMessageImage = styled.div<any>`
     justify-content: center;
     align-items: center;
     width: 33rem;
-    height: 33rem;
+    height: 25rem;
     border-radius: 0.6rem;
     padding: 0.4rem;
     background: white;
     margin-bottom: 0.2rem;
     position: relative;
 
-    ${props => props.mine && css`
+    ${({ mine }) => mine && css`
         background: ${({theme}) => theme.messageBox.color.messageMineBackground};
         margin-left: auto;
-        .__date {
-            position: relative !important;
-            right: 0.4rem !important;
-        }
     `}
+
+    .__date {
+        position: relative !important;
+        right: 0.6rem !important;
+        margin-bottom: 1rem !important;
+        border: 1px solid limegreen;
+        background: limegreen;
+        border-radius: 20px;
+    }
 
     .image {
         width: 100%;

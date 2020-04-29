@@ -1,6 +1,7 @@
 import { User, UserCredentials } from "./interfaces/user.interface";
 import { Meteor } from "meteor/meteor";
 import { Accounts } from "meteor/accounts-base";
+import { ImagesCollection } from "./images";
 
 export const dummyUsers: User[] = [
   {
@@ -12,7 +13,8 @@ export const dummyUsers: User[] = [
           picture: 'https://randomuser.me/api/portraits/thumb/men/1.jpg',
           actu: "Salut j'utilise whatsapp"
       }
-  }, {
+  },
+  {
       _id: '1',
       username: 'Bryan Wallace',
       password: "password",
@@ -21,7 +23,8 @@ export const dummyUsers: User[] = [
           picture: 'https://randomuser.me/api/portraits/thumb/lego/1.jpg',
           actu: "Salut j'utilise whatsapp"
       }
-  }, {
+  },
+  {
       _id: '2',
       username: 'Avery Stewart',
       password: "password",
@@ -30,7 +33,8 @@ export const dummyUsers: User[] = [
           picture: 'https://randomuser.me/api/portraits/thumb/women/1.jpg',
           actu: "Salut j'utilise whatsapp"
       }
-  }, {
+  },
+  {
       _id: '3',
       username: 'Katie Peterson',
       password: "password",
@@ -39,7 +43,8 @@ export const dummyUsers: User[] = [
           picture: 'https://randomuser.me/api/portraits/thumb/women/2.jpg',
           actu: "Salut j'utilise whatsapp"
       }
-  }, {
+  },
+  {
       _id: '4',
       username: 'Ray Edwards',
       password: "password",
@@ -48,7 +53,8 @@ export const dummyUsers: User[] = [
           picture: 'https://randomuser.me/api/portraits/thumb/men/2.jpg',
           actu: "Salut j'utilise whatsapp"
       }
-  }, {
+  },
+  {
       _id: '5',
       username: 'Samy Smith',
       password: "password",
@@ -57,7 +63,8 @@ export const dummyUsers: User[] = [
           picture: 'https://randomuser.me/api/portraits/thumb/men/1.jpg',
           actu: "Salut j'utilise whatsapp"
       }
-  }, {
+  },
+  {
       _id: '6',
       username: 'John Smith',
       password: "password",
@@ -66,7 +73,8 @@ export const dummyUsers: User[] = [
           picture: 'https://randomuser.me/api/portraits/thumb/men/2.jpg',
           actu: "Salut j'utilise whatsapp"
       }
-  }, {
+  },
+  {
       _id: '7',
       username: 'Adrianna Scott',
       password: "password",
@@ -75,7 +83,8 @@ export const dummyUsers: User[] = [
           picture: 'https://randomuser.me/api/portraits/thumb/women/1.jpg',
           actu: "Salut j'utilise whatsapp"
       }
-  }, {
+  },
+  {
       _id: '8',
       username: 'Julienne Smith',
       password: "password",
@@ -84,7 +93,8 @@ export const dummyUsers: User[] = [
           picture: 'https://randomuser.me/api/portraits/thumb/women/2.jpg',
           actu: "Salut j'utilise whatsapp"
       }
-  }, {
+  },
+  {
       _id: '9',
       username: 'Marco',
       password: "password",
@@ -106,9 +116,8 @@ if(Meteor.isServer) {
 
 Meteor.methods({
     'user.login': function({username, phone, password}: UserCredentials) {
-        let userExist: boolean;
         const user = Accounts.findUserByUsername(username);
-        userExist = !!user;
+        let userExist = !!user;
         if(userExist) return user;
         else {
           return Accounts.createUser({
@@ -119,7 +128,15 @@ Meteor.methods({
               actu: "Salut, j'utilise WhatsApp",
               picture: "https://t3.ftcdn.net/jpg/01/09/00/64/240_F_109006426_388PagqielgjFTAMgW59jRaDmPJvSBUL.jpg"
             }
-        );
+          });
         };
+    },
+    'user.username': function(_id: string, username: string) {
+        Accounts.setUsername(_id, username);
+    },
+    'user.picture': function(imageId: string) {
+       const Image = ImagesCollection.findOne(imageId);
+       const picture = Image.link();
+       return Meteor.users.update({ _id: this.userId! }, { $set: { "profile.picture": picture }});
     }
 });

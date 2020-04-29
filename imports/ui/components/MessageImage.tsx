@@ -6,17 +6,18 @@ import FontAwesome from 'react-fontawesome';
 
 interface MessageImageProps extends Message {
   mine: boolean;
+  onImgClick: any;
 };
 
-const MessageImage = ({ mine, content, createdAt }: MessageImageProps) => {
-
+const MessageImage = ({ mine, content, createdAt, onImgClick }: MessageImageProps) => {
+  
   const renderImage = () => {
       if(!mine) {
         return (
           <>
             <img className="image" src={content} alt="_img" />
             <div className="image--overlay">
-              <div className="detailsContainer__date">
+              <div className="detailsContainer __date">
                 <div className="image--date">
                   <Moment format="HH:mm">
                     {createdAt}
@@ -29,15 +30,15 @@ const MessageImage = ({ mine, content, createdAt }: MessageImageProps) => {
       } else {
         return (
           <>
-            <img className="image" src={content} alt="_img" />
+            <img className="image" src={content} alt="_img" onClick={onImgClick} />
             <div className="image--overlay">
-              <div className="detailsContainer__date">
+              <div className="detailsContainer __date">
                 <div className="image--date">
                   <Moment format="HH:mm">
                     {createdAt}
                   </Moment>
                 </div>
-                <FontAwesome style={{color: "white"}} name="check-double" />
+                <FontAwesome style={{ color: "white" }} name="check-double" />
               </div>
             </div>
           </>

@@ -26,21 +26,25 @@ const StyledOtherProfile = styled.div`
             background: #555;
         }
     }
+
     .OPH--heading {
         display: flex;
         flex-direction: row;
         align-items: center;
         padding: 0 0.9rem;
     }
+
     .iconOtherProfile {
         font-size: 2.4rem;
         margin-right: 3rem;
         color: #929fa6;
         cursor: pointer;
     }
+
     .OPH--title {
         font-size: 1.6rem;
     }
+
     .OP--imageContainer {
         display: flex;
         flex-direction: column;
@@ -53,6 +57,7 @@ const StyledOtherProfile = styled.div`
         background: white;
         margin-bottom: 1rem;
     }
+
     .OP--image {
         width: 20rem;
         height: 20rem;
@@ -60,7 +65,8 @@ const StyledOtherProfile = styled.div`
         overflow: hidden;
         margin-bottom: 2rem;
     }
-    .OPIC--txtContainer {
+
+    .OPIC--textContainer {
         text-align: left;
         width: 100%;
         height: 4.5rem;
@@ -68,15 +74,17 @@ const StyledOtherProfile = styled.div`
         flex-direction: column;
         justify-content: space-around;
     }
+
     .OPIC--title {
         color: ${ ({theme}) => theme.header.color.title};
         font-size: 1.9rem;
         margin-bottom: 0.7rem;
     }
+
     .OPIC--sbTitle {
         color: ${ ({theme}) => theme.header.color.subTitle};
         font-size: 1.4rem;
     }
-`
+`;
 
 export default StyledOtherProfile;

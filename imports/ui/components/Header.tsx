@@ -8,9 +8,10 @@ interface HeaderProps {
   iconClass: string;
   iconsWidthSmall?: any;
   children: any;
+  OPVisible?: boolean;
 };
 
-const Header = ({ icons, iconClass, iconsWidthSmall, children }: HeaderProps) => {
+const Header = ({ icons, iconClass, iconsWidthSmall, children, OPVisible }: HeaderProps) => {
 
   const renderIcons = () => {
     return icons.map((icon, i) => {
@@ -26,7 +27,7 @@ const Header = ({ icons, iconClass, iconsWidthSmall, children }: HeaderProps) =>
   };
 
   return (
-    <StyledHeader>
+    <StyledHeader OPVisible={OPVisible}>
       {children}
       <div className={iconsWidthSmall ? "icons--left small" : "icons--left"}>
         {renderIcons()}

@@ -5,10 +5,10 @@ import moment from 'moment';
 
 import { Chat, Message } from '/imports/api/interfaces/chat.interface';
 import { IIcon } from '/imports/api/interfaces/global.interface';
-import { IHandleFooterSend, IHandleFabInputChange } from '/imports/api/interfaces/functions.interface';
+import { IHandleFooterSend, IHandleFabInputChange, IHandleAvatarClick, IOnMsgTextClick } from '/imports/api/interfaces/functions.interface';
 
 import { MessagesCollection } from '/imports/api/messages';
-import { uploadFile } from '/imports/api/helpers';
+import { uploadFile, findOtherId } from '/imports/api/helpers';
 
 import Header from './Header';
 import Avatar from './Avatar';
@@ -22,12 +22,15 @@ import { Tracker } from 'meteor/tracker';
 
 interface MessageViewProps {
   selectedChat: Chat;
-  chatMessages: Message[];
+  chatMessages?: Message[];
+  onAvatarClick: IHandleAvatarClick;
+  OPVisible: boolean;
+  onMsgTxtClick: IOnMsgTextClick;
 };
 
 let fileInput: any = null;
 
-const MessageView = ({ selectedChat, chatMessages }: MessageViewProps) => {
+const MessageView = ({ selectedChat, chatMessages, onAvatarClick, OPVisible, onMsgTxtClick }: MessageViewProps) => {
   const icons: IIcon[] = [
     {
       name: "search",
@@ -67,13 +70,12 @@ const MessageView = ({ selectedChat, chatMessages }: MessageViewProps) => {
       Meteor.call('message.insert', message, (err: Error, id: any) => {
         if(err) console.log("[Error during Message Insert]", err);
         else {
-          uploadFile(fileInput);
+          uploadFile(fileInput, true);
           Tracker.autorun(() => {
             const imageUrl = Session.get("wwc__imageUrl");
             if(imageUrl && message.type === "IMAGE") {
-              Meteor.call('message.update', id, imageUrl, (err: any, res: any) => {
+              Meteor.call('message.update', id, imageUrl, (err: any, _: any) => {
                 if(err) console.log(err);
-                else console.log(res);
               });
             }
           });
@@ -105,10 +107,15 @@ const MessageView = ({ selectedChat, chatMessages }: MessageViewProps) => {
     setFabVisible(false);
   };
 
+  const avatarClick = () => {
+    const otherId: string = findOtherId(selectedChat?.participants);
+    onAvatarClick(otherId);
+  };
+
   return (
     <StyledMessageView>
-      <Header iconClass="greyIcon" icons={icons}>
-        <Avatar avatar_url={selectedChat.picture} />
+      <Header OPVisible={OPVisible} iconClass="greyIcon" icons={icons}>
+        <Avatar avatar_url={selectedChat.picture} onAvatarClick={avatarClick} />
         <div className="headerMsg--container">
           <span className="headerMsg--title">{selectedChat.title}</span>
           <span className="headerMsg--sbTitle">En ligne</span>
@@ -124,6 +131,7 @@ const MessageView = ({ selectedChat, chatMessages }: MessageViewProps) => {
               fabVisible={fabVisible}
               handleFabClick={handleFabClick}
               handleFabInputChange={handleFabInputChange}
+              onMsgTxtClick={onMsgTxtClick}
             />
             <Footer onSend={handleSend} />
           </>

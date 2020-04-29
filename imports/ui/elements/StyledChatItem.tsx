@@ -36,6 +36,7 @@ const StyledChatItem = styled.div<any>`
         margin-bottom: 0.3rem;
     }
     .content--line1__title {
+        font-weight: 600;
         font-size: 1.6rem;
         text-align: left;
     }

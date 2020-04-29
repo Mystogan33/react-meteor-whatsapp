@@ -16,6 +16,7 @@ const StyledLeftSide = styled.div`
         padding: 4.9rem 2.3rem;
         padding-bottom: 0rem;
     }
+
     .LS--header__line {
         display: flex;
         flex-direction: row;
@@ -25,10 +26,12 @@ const StyledLeftSide = styled.div`
         font-size: 1.9rem;
         height: 5.9rem;
     }
+
     .LS--header__icon {
         margin-right: 2.9rem;
         cursor: pointer;
     }
+
     .LS--avatar {
         display: flex;
         justify-content: center;
@@ -36,6 +39,7 @@ const StyledLeftSide = styled.div`
         width: 100%;
         margin: 2.8rem 0rem;
     }
+    
     .LS--desc {
         background: inherit;
         text-align: justify;

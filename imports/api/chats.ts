@@ -45,4 +45,9 @@ if(Meteor.isServer) {
       }
     });
   });
+  Meteor.methods({
+    "chat.remove": function(_id: string) {
+      return ChatsCollection.remove(_id);
+    }
+  })
 }

@@ -31,6 +31,7 @@ const StyledLSForm = styled.div`
         font-size: 1.7rem;
         font-weight: 400;
         padding-bottom: 0.4rem;
+        color: #128c7e;
     }
     .__border {
         border-bottom: 0.2rem solid #00BFA5 !important;

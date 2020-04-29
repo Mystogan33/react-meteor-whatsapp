@@ -8,8 +8,9 @@ import Day from './Day';
 import MessageText from './MessageText';
 import FlipMove from 'react-flip-move';
 import FABs from './FABs';
-import { IHandleFabInputChange } from '/imports/api/interfaces/functions.interface';
+import { IHandleFabInputChange, IOnMsgTextClick } from '/imports/api/interfaces/functions.interface';
 import MessageImage from './MessageImage';
+import { updateBadges } from '/imports/api/helpers';
 
 interface NormalizedMessage {
   date: string;
@@ -18,19 +19,20 @@ interface NormalizedMessage {
 };
 
 interface MessageBoxProps {
-  messages: Message[];
+  messages?: Message[];
   selectedChat: Chat;
   fabVisible: boolean;
   handleFabClick: () => void;
   handleFabInputChange: IHandleFabInputChange;
+  onMsgTxtClick: IOnMsgTextClick;
 }
 
-const MessageBox = ({ messages, selectedChat, fabVisible, handleFabClick, handleFabInputChange }: MessageBoxProps) => {
+const MessageBox = ({ messages, selectedChat, fabVisible, handleFabClick, handleFabInputChange, onMsgTxtClick }: MessageBoxProps) => {
   let isEven = false;
   const dFormat = "D MMMM Y";
   let chatEndDiv: HTMLDivElement;
 
-  messages.forEach(message => {
+  messages!.forEach(message => {
     if(!message.senderId) {
       message.ownership = !!message.ownership === isEven ? 'mine': 'other';
       isEven = !isEven;
@@ -59,12 +61,26 @@ const MessageBox = ({ messages, selectedChat, fabVisible, handleFabClick, handle
       if(type === "IMAGE") {
         const mine = ownership === "mine";
         return (
-          <MessageImage key={_id} content={content} createdAt={createdAt} mine={mine} />
+          <MessageImage 
+            key={_id}
+            content={content}
+            createdAt={createdAt}
+            mine={mine}
+            onImgClick={() => onMsgTxtClick(_id!, type)}
+          />
         )
       }
 
       return (
-        <MessageText key={_id} msgClass={msgClass} content={content} ownership={ownership} createdAt={createdAt} />
+        <MessageText 
+          key={_id}
+          id={_id}
+          msgClass={msgClass}
+          content={content}
+          ownership={ownership}
+          createdAt={createdAt}
+          onClick={onMsgTxtClick}
+        />
       );
     });
   };
@@ -84,7 +100,10 @@ const MessageBox = ({ messages, selectedChat, fabVisible, handleFabClick, handle
 
   const scrollToBottom = () => chatEndDiv.scrollIntoView({ behavior: "smooth"});
 
-  useEffect(() => scrollToBottom(), [selectedChat, messages]);
+  useEffect(() => {
+    scrollToBottom();
+    updateBadges(selectedChat.participants, selectedChat._id);
+  }, [selectedChat, messages]);
 
   return (
     <StyledMessageBox>

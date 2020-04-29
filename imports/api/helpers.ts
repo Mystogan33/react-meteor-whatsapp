@@ -10,7 +10,9 @@ import {
   IFindOtherUser, 
   ICreateDummyMessages, 
   IFindLastMessage, 
-  IUploadFile 
+  IUploadFile, 
+  IGetBadges,
+  IUpdateBadges
 } from "./interfaces/functions.interface";
 
 import { ChatsCollection } from "./chats";
@@ -51,12 +53,13 @@ export const findOtherId: IFindOtherId = (participants) => {
 export const findOtherUser: IFindOtherUser = (_id) => Meteor.users.findOne({_id});
 
 export const findLastMessage: IFindLastMessage = (chatId) => {
-  const foundMessage = MessagesCollection.findOne({ chatId }, { sort: { createdAt: -1 }});
-  if(!foundMessage) return null;
-  else return foundMessage;
+  const messages = MessagesCollection.find({ chatId }, { sort: { createdAt: -1 }}).fetch();
+  
+  if(!messages[0]) return ChatsCollection.findOne(chatId)!.lastMessage!;
+  else return messages[0];
 };
 
-export const uploadFile: IUploadFile = (file) => {
+export const uploadFile: IUploadFile = (file, isMessage) => {
   const fileUpload = ImagesCollection.insert({
     file,
     streams: "dynamic",
@@ -64,25 +67,33 @@ export const uploadFile: IUploadFile = (file) => {
     allowWebWorkers: true
   }, false);
 
-  fileUpload.on('start', () => console.log("Upload started"));
-
   fileUpload.on('end', (err: any, fileObj: any) => {
     if(err) console.log("[Upload Error]", err);
     else {
       const _id = fileObj._id;
-      Meteor.call('images.url', _id, (err: any, url: string) => {
-        if(err) console.log("[End Upload Error]", err);
-        else {
-          Session.set('wwc__imageUrl', url);
-          console.log(url);
-        }
-      });
+      if(isMessage) {
+        Meteor.call('images.url', _id, (err: any, url: string) => {
+          if(err) console.log("[End Upload Error]", err);
+          else Session.set('wwc__imageUrl', url);
+        });
+      } else Meteor.call('user.picture', _id);
     }
   });
 
-  fileUpload.on('progress', (progress: any, _: any) => {
-    console.log("Progress", progress);
-  });
-
   fileUpload.start();
+};
+
+export const getBadges: IGetBadges = (chatId) => {
+  const foundChat = ChatsCollection.findOne(chatId);
+
+  if(foundChat) {
+    const otherId = findOtherId(foundChat.participants);
+    const badgeNumber = MessagesCollection.find({ chatId, senderId: otherId, read: false }).count();
+    return badgeNumber;
+  } else return 0;
+};
+
+export const updateBadges: IUpdateBadges = (participants, chatId) => {
+  const otherId = findOtherId(participants);
+  Meteor.call("message.update.badges", chatId, otherId);
 };
