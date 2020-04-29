@@ -9,17 +9,15 @@ import Avatar from './Avatar';
 import Actu from './Actu';
 import ActuItem from './ActuItem';
 import { IHandleShowImage } from '/imports/api/interfaces/functions.interface';
-import { Tracker } from 'meteor/tracker';
-import { ChatsCollection } from '/imports/api/chats';
-import { Meteor } from 'meteor/meteor';
 
 interface OtherProfileProps {
   otherUserId: User["_id"];
   onClose: () => void;
   onShowImage: IHandleShowImage;
+  handleDeleteChat: any;
 };
 
-const OtherProfile = ({ otherUserId, onClose, onShowImage }: OtherProfileProps) => {
+const OtherProfile = ({ otherUserId, onClose, onShowImage, handleDeleteChat }: OtherProfileProps) => {
 
   const icons: IIcon[] = [
     {
@@ -38,20 +36,6 @@ const OtherProfile = ({ otherUserId, onClose, onShowImage }: OtherProfileProps) 
 
   const otherUser = findOtherUser(otherUserId);
   const { profile, username } = otherUser!;
-
-  const handleDeleteChat = () => {
-    const chat = ChatsCollection.findOne({
-      participants: { 
-        $all: [otherUserId, Meteor.userId()!]
-      }
-    });
-
-    if(chat) {
-      Meteor.call('chat.remove', chat._id, (err: any) => {
-        if(err) console.log(err);
-      });
-    }
-  };
   
   return (
     <StyledOtherProfile>
@@ -79,7 +63,7 @@ const OtherProfile = ({ otherUserId, onClose, onShowImage }: OtherProfileProps) 
               <Actu actu={profile?.actu} phone={profile?.phone} />
               <ActuItem iconName="ban" content="Bloquer" />
               <ActuItem iconName="thumbs-down" content="Supprimer le contact" />
-              <ActuItem iconName="trash" content="Supprimer la discussion" handleAction={handleDeleteChat} />
+              <ActuItem iconName="trash" content="Supprimer la discussion" handleAction={() => handleDeleteChat(otherUserId)} />
             </div>
           </>
         ) : null

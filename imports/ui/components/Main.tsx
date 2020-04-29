@@ -156,6 +156,20 @@ const Main = ({ loading, chats }: MainProps) => {
     });
   };
 
+  const handleDeleteChat = (userId: string) => {
+    const chat = ChatsCollection.findOne({
+      participants: { 
+        $all: [userId, Meteor.userId()!]
+      }
+    });
+
+    if(chat) {
+      Meteor.call('chat.remove', chat._id, (err: any) => {
+        if(err) console.log(err);
+      });
+    }
+  };
+
   return (
     <StyledMain>
       { !loading
@@ -200,7 +214,8 @@ const Main = ({ loading, chats }: MainProps) => {
               ? <OtherProfile 
                   otherUserId={OP.otherId}
                   onClose={handleClose}
-                  onShowImage={handleShowImage} />
+                  onShowImage={handleShowImage}
+                  handleDeleteChat={handleDeleteChat} />
               : null
             }
           </>
